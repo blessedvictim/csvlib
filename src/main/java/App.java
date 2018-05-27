@@ -10,7 +10,7 @@ public class App {
     public static void main(String[] args) {
         CSVReader reader = new CSVReader.Builder(new File("F:\\example1.csv"))
                 .strictSeparator(false)
-                .deleteWhitespaces(false)
+                .deleteWhitespaces(true)
                 .setRawMode(false)
                 .build();
         try {

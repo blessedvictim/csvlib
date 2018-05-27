@@ -19,29 +19,98 @@ import java.util.List;
 public class AppTest {
 
     @Test
-    public void shouldAnswerWithTrue() {
-        assertTrue(true);
-    }
-
-    @Test
-    public void brokedWhitescaped() {
+    public void brokedWhitescapes() {
         URL url = this.getClass().getResource("/" + "test1.csv");
         File file = new File(url.getFile());
-        CSVReader reader =new CSVReader.Builder(new File("F:\\test1.csv"))
+        CSVReader reader =new CSVReader.Builder(file)
                 .strictSeparator(true)
                 .deleteWhitespaces(true)
                 .setRawMode(false)
                 .build();
         try {
-            String[] arr1 = new String[]{"test", "\"t\"", "\"t\""};
-
+            String[] arr1 = new String[]{"test", "t", "t"};
+            String[] arr2 = new String[]{"test", "3245", "345"};
             List<String> line1 = reader.getRow();
             List<String> line2 = reader.getRow();
-            for(String s : line1){
-                System.out.println(s);
-            }
 
             Assert.assertArrayEquals(line1.toArray(new String[line1.size()]), arr1);
+            Assert.assertArrayEquals(line2.toArray(new String[line2.size()]), arr2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void LFdelimiterTest(){
+        URL url = this.getClass().getResource("/" + "test2.csv");
+        File file = new File(url.getFile());
+        CSVReader reader1 =new CSVReader.Builder(file)
+                .strictSeparator(true)
+                .deleteWhitespaces(true)
+                .setRawMode(false)
+                .build();
+        CSVReader reader2 =new CSVReader.Builder(file)
+                .strictSeparator(false)
+                .deleteWhitespaces(true)
+                .setRawMode(false)
+                .build();
+        try {
+            String[] arr1 = new String[]{"test2", "test2test2","test2"};
+            String[] arr2 = new String[]{"test2", "test2"};
+            List<String> line1 = reader1.getRow();
+            List<String> line2 = reader2.getRow();
+
+            Assert.assertArrayEquals(line1.toArray(new String[line1.size()]), arr1);
+            Assert.assertArrayEquals(line2.toArray(new String[line2.size()]), arr2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void deleteEscapedQuotes(){
+        URL url = this.getClass().getResource("/" + "test3.csv");
+        File file = new File(url.getFile());
+        CSVReader reader1 =new CSVReader.Builder(file)
+                .strictSeparator(true)
+                .deleteWhitespaces(true)
+                .setRawMode(false)
+                .build();
+
+        try {
+
+
+            String[] arr1 = new String[]{"test3", "tes\"\"t3"};
+            String[] arr2 = new String[]{"test3", "tes\"t3"};
+            List<String> line1 = reader1.getRow();
+            List<String> line2 = reader1.getRow();
+
+            Assert.assertArrayEquals(line1.toArray(new String[line1.size()]), arr1);
+            Assert.assertArrayEquals(line2.toArray(new String[line2.size()]), arr2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testRawMode(){
+        URL url = this.getClass().getResource("/" + "testraw.csv");
+        File file = new File(url.getFile());
+        CSVReader reader1 =new CSVReader.Builder(file)
+                .strictSeparator(false)
+                .setRawMode(true)
+                .build();
+
+        try {
+
+
+            String[] arr1 = new String[]{"test raw  ", " \" test\" test"};
+            String[] arr2 = new String[]{"\"test3\"", "  \"test\""};
+            List<String> line1 = reader1.getRow();
+            List<String> line2 = reader1.getRow();
+
+            Assert.assertArrayEquals(line1.toArray(new String[line1.size()]), arr1);
+            Assert.assertArrayEquals(line2.toArray(new String[line2.size()]), arr2);
         } catch (IOException e) {
             e.printStackTrace();
         }

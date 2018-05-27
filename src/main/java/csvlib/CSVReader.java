@@ -30,8 +30,8 @@ public class CSVReader {
 
 
         public Builder setRawMode(boolean rawMode) {
+            if(rawMode)deletePreFieldWhitescapes=false;
             this.rawMode = rawMode;
-            deletePreFieldWhitescapes=false;
             return this;
         }
 
@@ -122,7 +122,7 @@ public class CSVReader {
     }
 
     /**
-     * Split line on fields
+     * Divides the line into fields
      *
      * @param line
      * @return list of fields
