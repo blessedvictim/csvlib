@@ -22,11 +22,16 @@ public class AppTest {
     public void brokedWhitescapes() {
         URL url = this.getClass().getResource("/" + "test1.csv");
         File file = new File(url.getFile());
-        CSVReader reader =new CSVReader.Builder(file)
-                .strictSeparator(true)
-                .deleteWhitespaces(true)
-                .setRawMode(false)
-                .build();
+        CSVReader reader = null;
+        try {
+            reader = new CSVReader.Builder(file)
+                    .strictSeparator(true)
+                    .deleteWhitespaces(true)
+                    .setRawMode(false)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             String[] arr1 = new String[]{"test", "t", "t"};
             String[] arr2 = new String[]{"test", "3245", "345"};
@@ -41,7 +46,7 @@ public class AppTest {
     }
 
     @Test
-    public void LFdelimiterTest(){
+    public void LFdelimiterTest() throws Exception {
         URL url = this.getClass().getResource("/" + "test2.csv");
         File file = new File(url.getFile());
         CSVReader reader1 =new CSVReader.Builder(file)
@@ -68,7 +73,7 @@ public class AppTest {
     }
 
     @Test
-    public void deleteEscapedQuotes(){
+    public void deleteEscapedQuotes() throws Exception {
         URL url = this.getClass().getResource("/" + "test3.csv");
         File file = new File(url.getFile());
         CSVReader reader1 =new CSVReader.Builder(file)
@@ -93,7 +98,7 @@ public class AppTest {
     }
 
     @Test
-    public void testRawMode(){
+    public void testRawMode() throws Exception {
         URL url = this.getClass().getResource("/" + "testraw.csv");
         File file = new File(url.getFile());
         CSVReader reader1 =new CSVReader.Builder(file)

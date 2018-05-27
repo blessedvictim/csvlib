@@ -35,7 +35,7 @@ public class CSVReader {
             return this;
         }
 
-        public CSVReader build(){
+        public CSVReader build() throws Exception {
             return new CSVReader(this);
         }
 
@@ -71,17 +71,13 @@ public class CSVReader {
     private int linenum = 0;
 
 
-    private CSVReader(Builder builder) {
+    private CSVReader(Builder builder)throws Exception {
         this.rawMode=builder.rawMode;
         this.deletePreFieldWhitescapes=builder.deletePreFieldWhitescapes;
         this.strictLineDelim = builder.strictLineDelim;
-        try {
+
             this.reader = new PushbackReader(new InputStreamReader(new FileInputStream(builder.file), "utf-8"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
