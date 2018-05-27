@@ -1,16 +1,15 @@
 import csvlib.CSVReader;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-/**
- * Hello world!
- */
+
 public class App {
     public static void main(String[] args) {
-        URL url = new App().getClass().getResource("/" + "example.csv");
+        String lol = "looooo\noooool";
+        System.out.println(lol);
+        URL url = new App().getClass().getResource("/" + "data.csv");
         File file = new File(url.getFile());
         CSVReader reader;
         try {
@@ -21,7 +20,7 @@ public class App {
                     .build();
             String s;
             int i = 0;
-            while (reader.hasNextRow()) {
+            while (reader.hasNextRow() && i<50) {
                 System.out.print(++i + ":");
                 List<String> row = reader.getRow();
                 for (String str : row) {

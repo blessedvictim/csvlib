@@ -121,5 +121,54 @@ public class AppTest {
         }
     }
 
+    @Test
+    public void testCountFieldsWithEmptyFields() throws Exception {
+        URL url = this.getClass().getResource("/" + "testempty.csv");
+        File file = new File(url.getFile());
+        CSVReader reader1 =new CSVReader.Builder(file)
+                .strictSeparator(false)
+                .deleteWhitespaces(true)
+                .setRawMode(false)
+                .build();
+
+        try {
+
+
+            String[] arr1 = new String[]{"test","test","","","",""};
+            List<String> line1 = reader1.getRow();
+
+            Assert.assertArrayEquals(line1.toArray(new String[line1.size()]), arr1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void testCRLFandLFinField() throws Exception {
+        URL url = this.getClass().getResource("/" + "testseparator.csv");
+        File file = new File(url.getFile());
+        CSVReader reader1 =new CSVReader.Builder(file)
+                .strictSeparator(false)
+                .deleteWhitespaces(false)
+                .setRawMode(false)
+                .build();
+        try {
+
+            String[] arr1 = new String[]{"test","test","te\nst","test"};
+            String[] arr2 = new String[]{"test","test","te\nst","test"};
+            List<String> line1 = reader1.getRow();
+            List<String> line2 = reader1.getRow();
+
+            for(String s : line1){
+                System.out.println(s);
+            }
+            Assert.assertArrayEquals(line1.toArray(new String[line1.size()]), arr1);
+            Assert.assertArrayEquals(line2.toArray(new String[line2.size()]), arr2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

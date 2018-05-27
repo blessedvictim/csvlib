@@ -8,27 +8,41 @@ import java.util.stream.Collectors;
 public class CSVReader {
 
     static public class Builder{
-        boolean deletePreFieldWhitescapes=true;
-        boolean rawMode=false;
-        boolean strictLineDelim=true;
+        private boolean deletePreFieldWhitescapes=true;
+        private boolean rawMode=false;
+        private boolean strictLineDelim=true;
         File file;
 
         public Builder(File file){
             this.file=file;
         }
 
+        /**
+         * if set true fields will trim
+         * @param deletePreFieldWhitescapes
+         * @return
+         */
         public Builder deleteWhitespaces(boolean deletePreFieldWhitescapes) {
             this.deletePreFieldWhitescapes = deletePreFieldWhitescapes;
             return this;
         }
 
+        /**
+         * if set true only CRLF may split the lines
+         * @param strictLineDelim
+         * @return
+         */
         public Builder strictSeparator(boolean strictLineDelim) {
             this.strictLineDelim = strictLineDelim;
             return this;
         }
 
 
-
+        /**
+         * if set true returns fileds with quotes and whitespaces,if true automatically set deleteWhitespaces() on false
+         * @param rawMode
+         * @return
+         */
         public Builder setRawMode(boolean rawMode) {
             if(rawMode)deletePreFieldWhitescapes=false;
             this.rawMode = rawMode;
@@ -95,13 +109,20 @@ public class CSVReader {
             //System.out.println(Integer.toHexString(c));
             if (c == C_CR) {
                 if ((c = reader.read()) == C_LF) {
-                    if (quotedRun) continue;
+                    if (quotedRun){
+                        builder.append((char) c);
+                        continue;
+                    }
                     linenum++;
                     return builder.toString();
                 } else reader.unread(c);
                 continue;
             }
             if (c == C_LF) {
+                if(quotedRun){
+                    builder.append((char) c);
+                    continue;
+                }
                 if (!strictLineDelim) {
                     linenum++;
                     return builder.toString();
@@ -124,6 +145,7 @@ public class CSVReader {
      * @return list of fields
      */
     List<String> parseLine(String line) {
+        System.out.println(line);
         if (line == null) return null;
         try (
                 StringReader reader1 = new StringReader(line);
@@ -132,10 +154,8 @@ public class CSVReader {
             StringBuilder builder = new StringBuilder();
             List<String> list = new ArrayList<>();
             int c;
-            boolean prevQuote = false;
             while ((c = reader.read()) != -1) {
-                //System.out.println((char)(c));
-                //System.out.println(builder.toString());
+
 
                 if (c == C_QUOTE) {
                     quoteRun = !quoteRun;
@@ -174,8 +194,8 @@ public class CSVReader {
      * @return raw string from quoted field
      */
     private String deleteEscapedQuote(String str) {
-        //System.out.println(str);
-        if (str == null || str.isEmpty()) return null;
+        if (str == null) return null;
+        if(str.isEmpty())return "";
         StringBuilder builder = new StringBuilder(str);
         if (builder.charAt(0) == '"' && builder.charAt(builder.length() - 1) == '"') {
             builder.deleteCharAt(0);
@@ -188,9 +208,6 @@ public class CSVReader {
         return builder.toString();
     }
 
-    /*private String deleteDelimQuotes(String str){
-
-    } */
 
     public List<String> getRow() throws IOException {
         if (hasCached) {
